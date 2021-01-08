@@ -6,9 +6,9 @@ import core.basesyntax.model.Bet;
 import java.util.Scanner;
 
 public class ConsoleHandler {
-    BetDao betDao = new BetDaoImpl();
+    private BetDao betDao = new BetDaoImpl();
 
-    public void handler() {
+    public void handle() {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -22,11 +22,13 @@ public class ConsoleHandler {
                 int value = Integer.parseInt(betData[0]);
                 double risk = Double.parseDouble(betData[1]);
                 bet = new Bet(value, risk);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 System.out.println("Enter correct data!");
             }
-            betDao.add(bet);
-            System.out.println(bet == null ? null : bet.toString());
+            if (bet != null) {
+                betDao.add(bet);
+            }
+            System.out.println(bet);
         }
     }
 }
