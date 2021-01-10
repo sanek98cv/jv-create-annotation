@@ -1,12 +1,18 @@
 package core.basesyntax.controller;
 
 import core.basesyntax.dao.BetDao;
-import core.basesyntax.dao.BetDaoImpl;
+import core.basesyntax.dao.UserDao;
+import core.basesyntax.lib.Inject;
 import core.basesyntax.model.Bet;
+import core.basesyntax.model.User;
 import java.util.Scanner;
 
 public class ConsoleHandler {
-    private BetDao betDao = new BetDaoImpl();
+    @Inject
+    private BetDao betDao;
+
+    @Inject
+    private UserDao userDao;
 
     public void handle() {
         Scanner scanner = new Scanner(System.in);
@@ -16,19 +22,24 @@ public class ConsoleHandler {
             if (command.equalsIgnoreCase("q")) {
                 return;
             }
+            User user = null;
             Bet bet = null;
             try {
-                String[] betData = command.split(" ");
-                int value = Integer.parseInt(betData[0]);
-                double risk = Double.parseDouble(betData[1]);
+                String[] data = command.split(" ");
+                String name = data[0];
+                int age = Integer.parseInt(data[1]);
+                user = new User(name, age);
+                int value = Integer.parseInt(data[2]);
+                double risk = Double.parseDouble(data[3]);
                 bet = new Bet(value, risk);
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 System.out.println("Enter correct data!");
             }
-            if (bet != null) {
+            if (user != null && bet != null) {
+                userDao.add(user);
                 betDao.add(bet);
             }
-            System.out.println(bet);
+            System.out.println(user + " " + bet);
         }
     }
 }
