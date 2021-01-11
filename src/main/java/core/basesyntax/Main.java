@@ -11,7 +11,7 @@ public class Main {
             handler = (ConsoleHandler) Injector.getInstance(ConsoleHandler.class);
         } catch (NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException | InstantiationException e) {
-            throw new RuntimeException("Can't get instance ConsoleHandler");
+            throw new RuntimeException("Can't get instance ConsoleHandler", e);
         }
         System.out.println("Enter your name and age also value and risk");
         handler.handle();

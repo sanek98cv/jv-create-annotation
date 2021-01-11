@@ -3,8 +3,7 @@ package core.basesyntax.lib;
 import core.basesyntax.dao.BetDao;
 import core.basesyntax.dao.UserDao;
 import core.basesyntax.exception.NoAnnotationException;
-import core.basesyntax.factory.FactoryBet;
-import core.basesyntax.factory.FactoryUser;
+import core.basesyntax.factory.Factory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,16 +18,17 @@ public class Injector {
         for (Field field : fields) {
             if (field.getAnnotation(Inject.class) != null) {
                 field.setAccessible(true);
-                if (!FactoryBet.getBetDao().getClass().isAnnotationPresent(Dao.class)
-                        || !FactoryUser.getUserDao().getClass().isAnnotationPresent(Dao.class)) {
-                    throw new NoAnnotationException("Can't find annotation");
-                }
+                Object dao = new Object();
                 if (field.getType() == BetDao.class) {
-                    field.set(instance, FactoryBet.getBetDao());
+                    dao = Factory.getBetDao();
                 }
                 if (field.getType() == UserDao.class) {
-                    field.set(instance, FactoryUser.getUserDao());
+                    dao = Factory.getUserDao();
                 }
+                if (dao.getClass().getAnnotation(Dao.class) == null) {
+                    throw new NoAnnotationException("Can't find annotation");
+                }
+                field.set(instance, dao);
             }
         }
         return instance;
