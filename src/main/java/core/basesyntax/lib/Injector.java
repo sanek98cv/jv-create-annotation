@@ -26,7 +26,8 @@ public class Injector {
                     dao = Factory.getUserDao();
                 }
                 if (dao.getClass().getAnnotation(Dao.class) == null) {
-                    throw new NoAnnotationException("Can't find annotation");
+                    throw new NoAnnotationException("Can't find annotation @Dao in "
+                            + dao.getClass());
                 }
                 field.set(instance, dao);
             }
